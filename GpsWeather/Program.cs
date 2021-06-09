@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using Math.Gps;
 
 namespace GpsWeather
 {
-    public class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length < 4)
             {
@@ -50,12 +49,12 @@ namespace GpsWeather
                 list[i].Weather = weather;
             }
 
-            Console.WriteLine($"Time\tDistance\tElevation\tTemperature\tRain\tWind\tDirection");
+            Console.WriteLine("Time\tDistance [km]\tElevation [m]\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection [Deg]");
             foreach (var station in list)
             {
                 var t = start + new TimeSpan(0, 0, (int)station.Time);
                 var w = station.Weather.First(p => p.Time >= t);
-                Console.WriteLine($"{t}\t{station.Distance*1e-3}\t{station.Elevation}\t{w.Temperature}\t{w.Rain}\t{w.Wind}\t{w.Direction}");
+                Console.WriteLine($"{t}\t{station.Distance * 1e-3}\t{station.Elevation}\t{w.Temperature}\t{w.Rain}\t{w.Wind}\t{w.Direction}");
             }
         }
     }

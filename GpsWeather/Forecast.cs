@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -15,7 +13,7 @@ namespace GpsWeather
         {
             var myHttpWebRequest = (HttpWebRequest)WebRequest.Create($"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={ToString(lat)}&lon={ToString(lon)}");
             myHttpWebRequest.UserAgent = "GpsWeather/1.0 https://github.com/tmatthey/GpsWeather";
-            const int N = 256;
+            const int n = 256;
             var content = "";
             using (var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse())
             {
@@ -23,12 +21,12 @@ namespace GpsWeather
                 {
                     using (var streamRead = new StreamReader(streamResponse))
                     {
-                        var readBuff = new char[N];
-                        var count = streamRead.Read(readBuff, 0, N);
+                        var readBuff = new char[n];
+                        var count = streamRead.Read(readBuff, 0, n);
                         while (count > 0)
                         {
                             content += new string(readBuff, 0, count);
-                            count = streamRead.Read(readBuff, 0, N);
+                            count = streamRead.Read(readBuff, 0, n);
                         }
                     }
                 }
