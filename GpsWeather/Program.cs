@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Math.Gps;
 
@@ -43,13 +44,13 @@ namespace GpsWeather
             for (var i = 0; i < list.Count; i++)
             {
                 var content = Forecast.GetLocationForecastCompact(list[i].Latitude, list[i].Longitude);
-                //File.WriteAllText($"..\\..\\..\\..\\TestFiles\\{i}.json", content);
-                //var content = File.ReadAllText($"..\\..\\..\\..\\TestFiles\\{i}.json");
+                File.WriteAllText($"{i}.json", content);
+                //var content = File.ReadAllText($"{i}.json");
                 var (weather, latitude, longitude, elevation) = Forecast.Parse(content);
                 list[i].Weather = weather;
             }
 
-            Console.WriteLine("Time\tDistance [km]\tElevation [m]\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection [Deg]");
+            Console.WriteLine($"Time {DateTime.Now}\tDistance [km]\tElevation [m]\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection [Deg]");
             foreach (var station in list)
             {
                 var t = start + new TimeSpan(0, 0, (int)station.Time);
