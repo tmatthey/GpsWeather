@@ -54,7 +54,7 @@ namespace GpsWeather
             foreach (var station in list)
             {
                 var t = start + new TimeSpan(0, 0, (int)station.Time);
-                var w = station.Weather.First(p => p.Time >= t);
+                var w = station.Weather.First(p => p.Time <= t);
                 Console.WriteLine($"{t}\t{station.Distance * 1e-3}\t{station.Elevation}\t{w.Temperature}\t{w.Rain}\t{w.Wind}\t{w.Direction}");
             }
         }
