@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -35,14 +36,14 @@ namespace GpsWeather
             return content;
         }
 
-        public static (List<Weather> weather, double latitue, double longtiude, double elevation) Parse(string json)
+        public static (List<Weather> weather, double latitue, double longtiude, double elevation, DateTime updateTime) Parse(string json)
         {
             var list = new List<Weather>();
             dynamic compact = JObject.Parse(json);
             var timeseries = compact["properties"]["timeseries"];
             foreach (var point in timeseries)
             {
-                var time = point["time"].Value.ToLocalTime();
+                var time = point["time"].Value;
                 var data = point["data"];
                 var details = data["instant"]["details"];
                 double temperature = details["air_temperature"];
@@ -65,8 +66,16 @@ namespace GpsWeather
 
             var coordinates = compact["geometry"]["coordinates"];
 
-            return (list, coordinates[1], coordinates[0], coordinates[2]);
+            return (list, coordinates[1], coordinates[0], coordinates[2], compact["properties"]["meta"]["updated_at"].Value);
         }
+
+        public static string DirectionName(double d)
+        {
+            return DirectionNameTable[(int)((d + DirectionNameDelta) / 360.0 * DirectionNameTableN) % DirectionNameTableN];
+        }
+        private static readonly List<string> DirectionNameTable = new List<string> { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
+        private static readonly int DirectionNameTableN = DirectionNameTable.Count;
+        private static double DirectionNameDelta = 360.0 / (2.0 * DirectionNameTableN);
 
         private static bool GetRain(dynamic data, int hours, ref double rain)
         {

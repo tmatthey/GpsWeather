@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GpsWeather
 {
@@ -15,5 +16,6 @@ namespace GpsWeather
         public double Longitude { get; set; }
         public double Elevation { get; set; }
         public List<Weather> Weather { get; set; }
+        public DateTime WeatherTime { get; set; }
     }
 }

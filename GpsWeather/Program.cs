@@ -13,11 +13,11 @@ namespace GpsWeather
         {
             if (args.Length < 4)
             {
-                Console.WriteLine("Usage: gpsweather <route tcx, gpx or kml> <number of points> <velocity km/h> <start date time>");
+                Console.WriteLine("Usage: gpsweather <route tcx, gpx or kml> <number of points> <velocity km/h> <start local date time>");
                 return;
             }
             var filename = args[0];
-            var n = System.Math.Max(int.Parse(args[1], CultureInfo.InvariantCulture), 2);
+            var n = System.Math.Min(System.Math.Max(int.Parse(args[1], CultureInfo.InvariantCulture), 2), 100);
             var vel = int.Parse(args[2], CultureInfo.InvariantCulture) / 3.6; // km/h -> m/s
             var start = DateTime.Parse(args[3]);
 
@@ -41,21 +41,25 @@ namespace GpsWeather
                 Elevation = gps[i].Elevation
             }).ToList();
 
+            var tempDir = Environment.ExpandEnvironmentVariables("%TEMP%");
+
             for (var i = 0; i < list.Count; i++)
             {
+                var contentFilename = Path.Combine(tempDir, $"{i:D2}.json");
                 var content = Forecast.GetLocationForecastCompact(list[i].Latitude, list[i].Longitude);
-                File.WriteAllText($"{i}.json", content);
-                //var content = File.ReadAllText($"{i}.json");
-                var (weather, latitude, longitude, elevation) = Forecast.Parse(content);
+                File.WriteAllText(contentFilename, content);
+                //var content = File.ReadAllText(contentFilename);
+                var (weather, latitude, longitude, elevation, updateTime) = Forecast.Parse(content);
                 list[i].Weather = weather;
+                list[i].WeatherTime = updateTime;
             }
 
-            Console.WriteLine($"Time {DateTime.Now}\tDistance [km]\tElevation [m]\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection [Deg]");
+            Console.WriteLine($"Time\tDistance [km]\tElevation [m]\tUpdate time\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection\tDirection [Deg]");
             foreach (var station in list)
             {
                 var t = start + new TimeSpan(0, 0, (int)station.Time);
-                var w = station.Weather.First(p => p.Time <= t);
-                Console.WriteLine($"{t}\t{station.Distance * 1e-3}\t{station.Elevation}\t{w.Temperature}\t{w.Rain}\t{w.Wind}\t{w.Direction}");
+                var w = station.Weather.Last(p => p.Time.ToLocalTime() <= t);
+                Console.WriteLine($"{t}\t{station.Distance * 1e-3}\t{station.Elevation}\t{station.WeatherTime.ToLocalTime()}\t{w.Temperature}\t{w.Rain}\t{w.Wind}\t{Forecast.DirectionName(w.Direction)}\t{w.Direction}");
             }
         }
     }
