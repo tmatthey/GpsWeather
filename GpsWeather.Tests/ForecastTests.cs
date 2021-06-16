@@ -21,11 +21,11 @@ namespace GpsWeather.Tests
         }
 
         [TestCase(0.0, "N")]
-        [TestCase(360.0-31.0/32.0+0.01, "N")]
-        [TestCase(31.0/32.0-0.01, "N")]
+        [TestCase(360.0 - 31.0 / 32.0 + 0.01, "N")]
+        [TestCase(31.0 / 32.0 - 0.01, "N")]
         [TestCase(180.0, "S")]
-        [TestCase(180.0-31.0/32.0+0.01, "S")]
-        [TestCase(180.0+31.0/32.0-0.01, "S")]
+        [TestCase(180.0 - 31.0 / 32.0 + 0.01, "S")]
+        [TestCase(180.0 + 31.0 / 32.0 - 0.01, "S")]
         public void DirectionName(double d, string name)
         {
             Forecast.DirectionName(d).ShouldBe(name);

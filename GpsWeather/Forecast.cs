@@ -52,8 +52,16 @@ namespace GpsWeather
                 var rain = double.NaN;
 
                 var ok = GetRain(data, 1, ref rain);
-                if (!ok) ok = GetRain(data, 6, ref rain);
-                if (!ok) GetRain(data, 12, ref rain);
+                if (!ok)
+                {
+                    ok = GetRain(data, 6, ref rain);
+                }
+
+                if (!ok)
+                {
+                    GetRain(data, 12, ref rain);
+                }
+
                 list.Add(new Weather
                 {
                     Time = time,

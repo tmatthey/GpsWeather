@@ -16,6 +16,7 @@ namespace GpsWeather
                 Console.WriteLine("Usage: gpsweather <route tcx, gpx or kml> <number of points> <velocity km/h> <start local date time>");
                 return;
             }
+
             var filename = args[0];
             var n = System.Math.Min(System.Math.Max(int.Parse(args[1], CultureInfo.InvariantCulture), 2), 100);
             var vel = int.Parse(args[2], CultureInfo.InvariantCulture) / 3.6; // km/h -> m/s
@@ -27,11 +28,16 @@ namespace GpsWeather
             var total = dist.Last();
             var elevationGain = new List<double> { 0 };
             for (var i = 1; i < gps.Count; i++)
+            {
                 elevationGain.Add(elevationGain.Last() + System.Math.Max(gps[i].Elevation - gps[i - 1].Elevation, 0));
+            }
 
             var index = new List<int> { 0 };
             for (var i = 1; i < n; i++)
+            {
                 index.Add(dist.FindIndex(index.Last(), x => x >= total * i / n));
+            }
+
             index.Add(dist.Count - 1);
 
             var list = index.Select(i => new Station
@@ -58,7 +64,7 @@ namespace GpsWeather
                 list[i].WeatherTime = updateTime;
             }
 
-            Console.WriteLine($"Time\tDistance [km]\tElevation [m]\tElevation gain [m]\tUpdate time\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection\tDirection [Deg]");
+            Console.WriteLine("Time\tDistance [km]\tElevation [m]\tElevation gain [m]\tUpdate time\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection\tDirection [Deg]");
             foreach (var station in list)
             {
                 var t = start + new TimeSpan(0, 0, (int)station.Time);
