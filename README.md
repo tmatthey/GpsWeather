@@ -3,7 +3,7 @@ Generate weather forcast based on yr.no API along a GPS track with given velocit
 
 ## Usage
 
-gpsweather <route tcx, gpx or kml> <number of points> <velocity km/h> <start local date time>
+gpsweather \<route tcx, gpx or kml\> \<number of points\> \<velocity km/h\> \<start local date time\>
 
 ## Output
 
