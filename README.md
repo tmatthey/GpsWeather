@@ -1,2 +1,18 @@
 # GpsWeather
-Generate weather forcast based yr.no API along a GPS track with given velocity and start time
+Generate weather forcast based on yr.no API along a GPS track with given velocity and start time. 
+
+## Usage
+
+gpsweather <route tcx, gpx or kml> <number of points> <velocity km/h> <start local date time>
+
+## Output
+
+| Time           | Distance \[km\] | Elevation \[m\] | Elevation gain \[m\] | Update time    | Temperature \[C\] | Rain \[mm/h\] | Wind \[m/s\] | Direction | Direction \[Deg\] |
+| -------------- | --------------- | --------------- | -------------------- | -------------- | ----------------- | ------------- | ------------ | --------- | ----------------- |
+| 20-06-21 11:00 | 0               | 156.39          | 0                    | 16-06-21 06:54 | 12.4              | 0             | 1.3          | S         | 172.6             |
+| 20-06-21 11:24 | 10.06907        | 27.32           | 80.21                | 16-06-21 06:56 | 12.6              | 0             | 0.8          | S         | 172.6             |
+| 20-06-21 11:48 | 20.19473        | 84.55           | 208.31               | 16-06-21 06:54 | 12                | 0             | 0.9          | S         | 172.6             |
+| 20-06-21 12:12 | 30.20807        | 41.02           | 332.45               | 16-06-21 06:56 | 12.8              | 0             | 0.9          | S         | 172.6             |
+| 20-06-21 12:36 | 40.28568        | 48.99           | 409.21               | 16-06-21 06:56 | 12.3              | 0             | 0.9          | SE        | 127.1             |
+| 20-06-21 13:00 | 50.35823        | 6.4             | 649.99               | 16-06-21 06:54 | 12.8              | 0             | 0.5          | NNE       | 33.4              |
+| 20-06-21 13:24 | 60.41483        | 47.06           | 749.88               | 16-06-21 06:56 | 13.1              | 0             | 0.6          | NNE       | 33.4              |
