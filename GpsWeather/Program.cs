@@ -25,6 +25,9 @@ namespace GpsWeather
             var gps = track.GpsPoints().ToList();
             var dist = Geodesy.Distance.HaversineAccumulated(gps);
             var total = dist.Last();
+            var elevationGain = new List<double> { 0 };
+            for (var i = 1; i < gps.Count; i++)
+                elevationGain.Add(elevationGain.Last() + System.Math.Max(gps[i].Elevation - gps[i - 1].Elevation, 0));
 
             var index = new List<int> { 0 };
             for (var i = 1; i < n; i++)
@@ -38,7 +41,8 @@ namespace GpsWeather
                 Time = dist[i] / vel,
                 Latitude = gps[i].Latitude,
                 Longitude = gps[i].Longitude,
-                Elevation = gps[i].Elevation
+                Elevation = gps[i].Elevation,
+                ElevationGain = elevationGain[i]
             }).ToList();
 
             var tempDir = Environment.ExpandEnvironmentVariables("%TEMP%");
@@ -54,12 +58,12 @@ namespace GpsWeather
                 list[i].WeatherTime = updateTime;
             }
 
-            Console.WriteLine($"Time\tDistance [km]\tElevation [m]\tUpdate time\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection\tDirection [Deg]");
+            Console.WriteLine($"Time\tDistance [km]\tElevation [m]\tElevation gain [m]\tUpdate time\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection\tDirection [Deg]");
             foreach (var station in list)
             {
                 var t = start + new TimeSpan(0, 0, (int)station.Time);
                 var w = station.Weather.Last(p => p.Time.ToLocalTime() <= t);
-                Console.WriteLine($"{t}\t{station.Distance * 1e-3}\t{station.Elevation}\t{station.WeatherTime.ToLocalTime()}\t{w.Temperature}\t{w.Rain}\t{w.Wind}\t{Forecast.DirectionName(w.Direction)}\t{w.Direction}");
+                Console.WriteLine($"{t}\t{station.Distance * 1e-3}\t{station.Elevation}\t{station.ElevationGain}\t{station.WeatherTime.ToLocalTime()}\t{w.Temperature}\t{w.Rain}\t{w.Wind}\t{Forecast.DirectionName(w.Direction)}\t{w.Direction}");
             }
         }
     }

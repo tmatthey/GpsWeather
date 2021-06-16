@@ -15,6 +15,7 @@ namespace GpsWeather
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double Elevation { get; set; }
+        public double ElevationGain { get; set; }
         public List<Weather> Weather { get; set; }
         public DateTime WeatherTime { get; set; }
     }
