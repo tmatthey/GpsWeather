@@ -5,7 +5,6 @@ using System.IO;
 using System.Net;
 using Newtonsoft.Json.Linq;
 
-
 namespace GpsWeather
 {
     public static class Forecast
@@ -50,16 +49,16 @@ namespace GpsWeather
                 double wind = details["wind_speed"];
                 double direction = details["wind_from_direction"];
                 var rain = double.NaN;
-
-                var ok = GetRain(data, 1, ref rain);
+                var symbole = "";
+                var ok = GetTimeData(data, 1, ref rain, ref symbole);
                 if (!ok)
                 {
-                    ok = GetRain(data, 6, ref rain);
+                    ok = GetTimeData(data, 6, ref rain, ref symbole);
                 }
 
                 if (!ok)
                 {
-                    GetRain(data, 12, ref rain);
+                    GetTimeData(data, 12, ref rain, ref symbole);
                 }
 
                 list.Add(new Weather
@@ -68,7 +67,8 @@ namespace GpsWeather
                     Temperature = temperature,
                     Wind = wind,
                     Direction = direction,
-                    Rain = rain
+                    Rain = rain,
+                    Symbol = symbole
                 });
             }
 
@@ -85,11 +85,12 @@ namespace GpsWeather
         private static readonly int DirectionNameTableN = DirectionNameTable.Count;
         private static double DirectionNameDelta = 360.0 / (2.0 * DirectionNameTableN);
 
-        private static bool GetRain(dynamic data, int hours, ref double rain)
+        private static bool GetTimeData(dynamic data, int hours, ref double rain, ref string symbol)
         {
             if (data[$"next_{hours}_hours"] != null && data[$"next_{hours}_hours"]["details"] != null && data[$"next_{hours}_hours"]["details"]["precipitation_amount"] != null)
             {
                 rain = data[$"next_{hours}_hours"]["details"]["precipitation_amount"] / (double)hours;
+                symbol = data[$"next_{hours}_hours"]["summary"]["symbol_code"];
                 return true;
             }
 

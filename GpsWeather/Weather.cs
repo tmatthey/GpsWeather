@@ -13,5 +13,7 @@ namespace GpsWeather
         public double Direction { get; set; }
 
         public double Rain { get; set; }
+
+        public string Symbol {get;set; }
     }
 }
