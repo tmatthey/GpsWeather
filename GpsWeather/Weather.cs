@@ -15,5 +15,11 @@ namespace GpsWeather
         public double Rain { get; set; }
 
         public string Symbol {get;set; }
+
+        public double RainMin { get; set; }
+
+        public double RainMax { get; set; }
+
+        public double RainProbability { get; set; }
     }
 }

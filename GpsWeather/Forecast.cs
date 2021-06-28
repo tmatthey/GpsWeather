@@ -9,9 +9,9 @@ namespace GpsWeather
 {
     public static class Forecast
     {
-        public static string GetLocationForecastCompact(double lat, double lon)
+        public static string GetLocationForecastComplete(double lat, double lon)
         {
-            var myHttpWebRequest = (HttpWebRequest)WebRequest.Create($"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={ToString(lat)}&lon={ToString(lon)}");
+            var myHttpWebRequest = (HttpWebRequest)WebRequest.Create($"https://api.met.no/weatherapi/locationforecast/2.0/complete?lat={ToString(lat)}&lon={ToString(lon)}");
             myHttpWebRequest.UserAgent = "GpsWeather/1.0 https://github.com/tmatthey/GpsWeather";
             const int n = 256;
             var content = "";
@@ -49,16 +49,19 @@ namespace GpsWeather
                 double wind = details["wind_speed"];
                 double direction = details["wind_from_direction"];
                 var rain = double.NaN;
+                var rainMin = double.NaN;
+                var rainMax = double.NaN;
+                var rainProbability = double.NaN;
                 var symbole = "";
-                var ok = GetTimeData(data, 1, ref rain, ref symbole);
+                var ok = GetTimeData(data, 1, ref rain, ref rainMin, ref rainMax, ref rainProbability, ref symbole);
                 if (!ok)
                 {
-                    ok = GetTimeData(data, 6, ref rain, ref symbole);
+                    ok = GetTimeData(data, 6, ref rain, ref rainMin, ref rainMax, ref rainProbability, ref symbole);
                 }
 
                 if (!ok)
                 {
-                    GetTimeData(data, 12, ref rain, ref symbole);
+                    GetTimeData(data, 12, ref rain, ref rainMin, ref rainMax, ref rainProbability, ref symbole);
                 }
 
                 list.Add(new Weather
@@ -68,6 +71,9 @@ namespace GpsWeather
                     Wind = wind,
                     Direction = direction,
                     Rain = rain,
+                    RainMin = rainMin,
+                    RainMax = rainMax,
+                    RainProbability = rainProbability,
                     Symbol = symbole
                 });
             }
@@ -85,11 +91,14 @@ namespace GpsWeather
         private static readonly int DirectionNameTableN = DirectionNameTable.Count;
         private static double DirectionNameDelta = 360.0 / (2.0 * DirectionNameTableN);
 
-        private static bool GetTimeData(dynamic data, int hours, ref double rain, ref string symbol)
+        private static bool GetTimeData(dynamic data, int hours, ref double rain, ref double rainMin, ref double rainMax, ref double rainProbability, ref string symbol)
         {
             if (data[$"next_{hours}_hours"] != null && data[$"next_{hours}_hours"]["details"] != null && data[$"next_{hours}_hours"]["details"]["precipitation_amount"] != null)
             {
                 rain = data[$"next_{hours}_hours"]["details"]["precipitation_amount"] / (double)hours;
+                rainMin = data[$"next_{hours}_hours"]["details"]["precipitation_amount_min"] / (double)hours;
+                rainMax = data[$"next_{hours}_hours"]["details"]["precipitation_amount_max"] / (double)hours;
+                rainProbability = data[$"next_{hours}_hours"]["details"]["probability_of_precipitation"] / 100.0;
                 symbol = data[$"next_{hours}_hours"]["summary"]["symbol_code"];
                 return true;
             }

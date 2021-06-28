@@ -56,7 +56,7 @@ namespace GpsWeather
             for (var i = 0; i < list.Count; i++)
             {
                 var contentFilename = Path.Combine(tempDir, $"{i:D2}.json");
-                var content = Forecast.GetLocationForecastCompact(list[i].Latitude, list[i].Longitude);
+                var content = Forecast.GetLocationForecastComplete(list[i].Latitude, list[i].Longitude);
                 File.WriteAllText(contentFilename, content);
                 //var content = File.ReadAllText(contentFilename);
                 var (weather, latitude, longitude, elevation, updateTime) = Forecast.Parse(content);
@@ -64,12 +64,12 @@ namespace GpsWeather
                 list[i].WeatherTime = updateTime;
             }
 
-            Console.WriteLine("Time\tDistance [km]\tElevation [m]\tElevation gain [m]\tUpdate time\tWeather\tTemperature [C]\tRain [mm/h]\tWind [m/s]\tDirection\tDirection [Deg]");
+            Console.WriteLine("Time\tDistance [km]\tElevation [m]\tElevation gain [m]\tUpdate time\tWeather\tTemperature [C]\tRain [mm/h]\tRain min [mm/h]\tRain max [mm/h]\tRain probability[mm/h]\tWind [m/s]\tDirection\tDirection [Deg]");
             foreach (var station in list)
             {
                 var t = start + new TimeSpan(0, 0, (int)station.Time);
                 var w = station.Weather.Last(p => p.Time.ToLocalTime() <= t);
-                Console.WriteLine($"{t}\t{station.Distance * 1e-3}\t{station.Elevation}\t{station.ElevationGain}\t{station.WeatherTime.ToLocalTime()}\t{w.Symbol}\t{w.Temperature}\t{w.Rain}\t{w.Wind}\t{Forecast.DirectionName(w.Direction)}\t{w.Direction}");
+                Console.WriteLine($"{t}\t{station.Distance * 1e-3}\t{station.Elevation}\t{station.ElevationGain}\t{station.WeatherTime.ToLocalTime()}\t{w.Symbol}\t{w.Temperature}\t{w.Rain}\t{w.RainMin}\t{w.RainMax}\t{(int)(w.RainProbability * 10.0)}\t{w.Wind}\t{Forecast.DirectionName(w.Direction)}\t{w.Direction}");
             }
         }
     }
