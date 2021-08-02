@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Math.Matthey" Version="2.4.0" />
-    <PackageReference Include="Math.Matthey.Tools.TrackReaders" Version="2.4.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Math.Matthey" Version="2.5.0" />
+    <PackageReference Include="Math.Matthey.Tools.TrackReaders" Version="2.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
